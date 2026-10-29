@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أفق | قياس الأثر</title>
+<style>
+body{font-family:Tahoma,Arial;background:#f8f1e8;color:#35252a;margin:0}
+header{background:#641c35;color:white;text-align:center;padding:24px}
+main{max-width:650px;margin:auto;padding:18px}
+.card{background:white;padding:20px;border-radius:16px;margin:15px 0;box-shadow:0 2px 8px #0001}
+button{background:#641c35;color:white;border:0;border-radius:9px;padding:12px 18px;margin:8px 0;cursor:pointer}
+input{padding:12px;border:1px solid #bbb;border-radius:8px}
+label{display:block;padding:9px}
+.question{border-bottom:1px solid #ddd;padding:12px 0}
+.hidden{display:none}
+.good{color:#176d39;font-weight:bold}
+</style>
+</head>
+<body>
+<header>
+<h1>أفق | منصة التعلم والإتقان</h1>
+<p>نظام الاختبار القبلي والبعدي وقياس الأثر</p>
+</header>
+<main>
+<div class="card" id="start">
+<h2>مرحبًا بكِ في رحلة التعلم 🔬</h2>
+<p>أدخلي رمزكِ التعليمي دون كتابة اسمكِ.</p>
+<input id="student" placeholder="مثال: A01">
+<br>
+<button onclick="begin()">ابدئي الاختبار القبلي</button>
+<p id="warning"></p>
+</div>
+
+<div class="card hidden" id="test">
+<h2 id="testTitle"></h2>
+<div id="questions"></div>
+<button onclick="finish()">تسليم الإجابات</button>
+<p id="error"></p>
+</div>
+
+<div class="card hidden" id="learning">
+<h2>أحسنتِ! 🌟</h2>
+<p id="preResult"></p>
+<p>انتقلي إلى مختبر أفق، ونفذي تجارب الكهرباء والعدسات والمرايا.</p>
+<a href="index.html"><button>الذهاب إلى المختبر 🔬</button></a>
+<p>بعد الانتهاء، عودي إلى هذه الصفحة لإجراء الاختبار البعدي.</p>
+<button onclick="postTest()">ابدئي الاختبار البعدي</button>
+</div>
+
+<div class="card hidden" id="report">
+<h2>تقرير إنجاز الطالبة 📊</h2>
+<div id="result"></div>
+<button onclick="download()">تصدير نتيجتي</button>
+<p>أرسلي ملف النتيجة إلى معلمتكِ.</p>
+</div>
+</main>
+
+<script>
+const bank=[
+{
+q:"ما وحدة قياس المقاومة الكهربائية؟",
+a:["الأوم","الفولت","الأمبير"],c:0
+},
+{
+q:"إذا زاد فرق الجهد وثبتت المقاومة، فإن التيار:",
+a:["يقل","يزداد","لا يتغير"],c:1
+},
+{
+q:"عند دلك بالون بالصوف واكتسابه إلكترونات، تصبح شحنته:",
+a:["موجبة","متعادلة","سالبة"],c:2
+},
+{
+q:"عند تقريب قضيب سالب من علبة معدنية متعادلة، تتجمع الإلكترونات:",
+a:["في الجانب البعيد","في الجانب القريب","خارج العلبة"],c:0
+},
+{
+q:"إذا وُضع جسم عند ضعف البعد البؤري لعدسة محدبة، فإن صورته:",
+a:["خيالية مكبرة","حقيقية مساوية للجسم","معتدلة مصغرة"],c:1
+},
+{
+q:"العدسة المقعرة تكوّن لجسم حقيقي صورة:",
+a:["حقيقية مقلوبة","حقيقية مكبرة","خيالية معتدلة مصغرة"],c:2
+},
+{
+q:"المرآة المحدبة تكوّن لجسم حقيقي صورة:",
+a:["خيالية معتدلة مصغرة","حقيقية مقلوبة","حقيقية مكبرة"],c:0
+},
+{
+q:"عندما يقع جسم بين بؤرة المرآة المقعرة وقطبها، تكون صورته:",
+a:["حقيقية مقلوبة","خيالية معتدلة مكبرة","حقيقية مصغرة"],c:1
+}
+];
+
+let id="",stage="pre",pre=0,post=0;
+const $=x=>document.getElementById(x);
+function show(x){
+["start","test","learning","report"].forEach(
+k=>$(k).classList.toggle("hidden",k!==x)
+);
+}
+function begin(){
+id=$("student").value.trim();
+if(!/^[A-Za-z0-9_-]{2,20}$/.test(id)){
+$("warning").textContent="اكتبي رمزًا مثل A01 بالحروف والأرقام الإنجليزية.";
+return;
+}
+stage="pre";
+render();
+}
+function render(){
+$("testTitle").textContent=stage==="pre"?"الاختبار القبلي":"الاختبار البعدي";
+$("error").textContent="";
+$("questions").innerHTML=bank.map((q,i)=>
+'<div class="question"><b>'+(i+1)+'. '+q.q+'</b>'+
+q.a.map((a,j)=>
+'<label><input type="radio" name="q'+i+'" value="'+j+'"> '+a+'</label>'
+).join("")+'</div>'
+).join("");
+show("test");
+}
+function finish(){
+let score=0;
+for(let i=0;i<bank.length;i++){
+let a=document.querySelector('input[name="q'+i+'"]:checked');
+if(!a){
+$("error").textContent="أجيبي عن جميع الأسئلة قبل التسليم.";
+return;
+}
+if(Number(a.value)===bank[i].c)score++;
+}
+if(stage==="pre"){
+pre=score;
+$("preResult").textContent="نتيجتكِ القبلية: "+pre+" من "+bank.length;
+show("learning");
+}else{
+post=score;
+$("result").innerHTML=
+"<p>رمز الطالبة: "+id+"</p>"+
+"<p>الاختبار القبلي: "+(pre/bank.length*100)+"%</p>"+
+"<p>الاختبار البعدي: "+(post/bank.length*100)+"%</p>"+
+"<p class='good'>التغير: "+((post-pre)/bank.length*100)+" نقطة مئوية</p>";
+show("report");
+}
+}
+function postTest(){
+stage="post";
+render();
+}
+function download(){
+const data={
+platform:"أفق",
+studentId:id,
+date:new Date().toISOString(),
+preScore:pre,
+postScore:post,
+total:bank.length,
+prePercent:pre/bank.length*100,
+postPercent:post/bank.length*100,
+changePoints:(post-pre)/bank.length*100
+};
+const blob=new Blob([JSON.stringify(data,null,2)],
+{type:"application/json"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download="afaq-result-"+id+".json";
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+</script>
+</body>
+</html>
