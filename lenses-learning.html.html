@@ -1,0 +1,49 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>رحلة العدسات | أفق</title><style>:root{--b:#641c35;--g:#c59c58}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#f8f1e8;color:#30252a}header{background:var(--b);color:white;text-align:center;padding:26px 14px}h1{margin:0 0 8px}main{max-width:900px;margin:auto;padding:18px}.card{background:white;padding:22px;margin:16px 0;border-radius:16px;box-shadow:0 4px 16px #0001;border-right:5px solid var(--g)}h2{color:var(--b)}button,.btn{border:0;background:var(--b);color:white;padding:11px 17px;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block;margin:5px}input,select{accent-color:var(--b);padding:8px;max-width:100%}label{display:block;margin:12px 0}svg{background:#fffaf2;width:100%;border:1px solid #e2d6c8;border-radius:12px;direction:ltr}#feedback,#result{font-weight:bold;line-height:1.9}.small{font-size:.92rem;color:#62545a}.badge{background:#f4e6ed;border-radius:8px;padding:8px 12px;display:inline-block}fieldset{border:1px solid #e1d5dc;border-radius:10px;margin:12px 0}legend{font-weight:bold}fieldset label{cursor:pointer}.bar{height:14px;background:#e7dce0;border-radius:20px;overflow:hidden}.bar span{display:block;height:100%;background:#b48b48;width:0;transition:width .2s}</style></head><body><header><h1>🔍 رحلة العدسات</h1><p>أفق | شاهدي ← جرّبي ← اختبري ← أتقني</p></header><main><a class="btn" href="index.html">↩ العودة إلى منصة أفق</a><div class="card"><h2>🎬 ١. شاهدي | افهمي الفكرة</h2><p>العدسة المحدبة <b>مجمِّعة</b> للأشعة المتوازية، أما العدسة المقعرة فهي <b>مفرِّقة</b> لها.</p><p>في العدسة المحدبة: إذا كان الجسم خارج البؤرة تتكون صورة حقيقية مقلوبة؛ وإذا كان داخل البؤرة تتكون صورة خيالية معتدلة مكبرة. العدسة المقعرة تكوّن لجسم حقيقي صورة خيالية معتدلة مصغرة.</p><p class="small">🎥 مكان الفيديو التعليمي: سنضيف مقطعًا مناسبًا لاحقًا بعد تحديد مصدره. يمكنك الآن التعلم من الشرح والمحاكاة أدناه.</p></div><div class="card"><h2>🔬 ٢. جرّبي | مختبر العدسات</h2><label>نوع العدسة <select id="type"><option value="convex">محدبة (مجمعة)</option><option value="concave">مقعرة (مفرقة)</option></select></label><label>بعد الجسم: <strong id="dv">30</strong> سم <input id="d" type="range" min="5" max="60" value="30" step="1"></label><label>مقدار البعد البؤري: <strong id="fv">10</strong> سم <input id="f" type="range" min="5" max="20" value="10" step="1"></label><svg id="scene" viewBox="0 0 700 320" role="img" aria-label="رسم توضيحي لمسارات الأشعة والصورة في العدسة"><defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="currentColor"/></marker></defs><line x1="20" y1="160" x2="680" y2="160" stroke="#8c7c79" stroke-width="2"/><line x1="350" y1="18" x2="350" y2="300" stroke="#608f9f" stroke-dasharray="5 5"/><g id="lens"></g><g id="rays"></g><g id="objects"></g><g id="marks"></g></svg><p id="info" class="badge" aria-live="polite"></p><p class="small">رسم تخطيطي باستخدام تقريب العدسة الرقيقة؛ لا يمثل مقياسًا بصريًا حقيقيًا خارج هذا التقريب.</p></div><div class="card"><h2>🧠 ٣. اختبري | تحدي الإتقان</h2><div id="questions"></div><button id="grade">تصحيح الإجابات</button><p id="feedback" aria-live="polite"></p></div><div class="card"><h2>📊 ٤. أتقني | تقرير التقدم</h2><div class="bar"><span id="progress"></span></div><p id="result">أكملي الاختبار لتظهر نتيجة الإتقان.</p><button id="retry">إعادة المحاولة</button><p class="small">النتيجة تظهر على هذا الجهاز فقط؛ لا تُرسل تلقائيًا إلى المعلمة أو إلى خادم. لجمع النتائج نحتاج آلية تسليم منفصلة.</p></div></main><script>
+const $=id=>document.getElementById(id), svgNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){let e=document.createElementNS(svgNS,tag);for(let [k,v] of Object.entries(attrs))e.setAttribute(k,v);parent.appendChild(e);return e}
+function line(g,x1,y1,x2,y2,color='#c05639',dash=false){return el('line',{x1,y1,x2,y2,stroke:color,'stroke-width':2.4,...(dash?{'stroke-dasharray':'6 5'}:{})},g)}
+function txt(g,x,y,t){let e=el('text',{x,y,'font-size':13,fill:'#403039','text-anchor':'middle'},g);e.textContent=t}
+function arrow(g,x,y,h,color,label){
+  line(g,x,y,x,y-h,color);
+  const tip=y-h, sign=h>=0?1:-1;
+  el('path',{d:`M${x-6} ${tip+sign*10} L${x} ${tip} L${x+6} ${tip+sign*10}`,fill:'none',stroke:color,'stroke-width':2},g);
+  txt(g,x,tip+(h>=0?-11:20),label);
+}
+function draw(){
+  const d=+$('d').value,F=+$('f').value,convex=$('type').value==='convex';
+  const f=convex?F:-F, den=1/f-1/d, di=Math.abs(den)<1e-10?Infinity:1/den;
+  const m=Number.isFinite(di)?-di/d:NaN;
+  $('dv').textContent=d;$('fv').textContent=F;
+  const sc=5.2,ox=350,axis=160,h=48,xo=ox-d*sc,yo=axis-h;
+  const xi=ox+di*sc,yi=axis-m*h;
+  for(const id of ['lens','rays','objects','marks'])$(id).replaceChildren();
+  const l=$('lens'),r=$('rays'),o=$('objects'),k=$('marks');
+  el('path',{d:convex?'M350 35 Q330 160 350 285 Q370 160 350 35 Z':'M335 35 Q365 160 335 285 L365 285 Q335 160 365 35 Z',fill:'#b4dce7','fill-opacity':'.6',stroke:'#44859c','stroke-width':2},l);
+  for(const sign of [-1,1]){const fx=ox+sign*F*sc;line(k,fx,153,fx,167,'#777');txt(k,fx,183,'F')}
+  arrow(o,xo,axis,h,'#2a6b9e','الجسم');
+  // الشعاع الأحمر: يسير موازيًا للمحور ثم ينكسر مارًا بالبؤرة البعيدة
+  // في المحدبة، أو يتباعد بحيث يمر امتداده الخلفي بالبؤرة القريبة في المقعرة.
+  line(r,xo,yo,ox,yo,'#c05639');
+  const slopeParallel=h/(f*sc), rightX=680;
+  line(r,ox,yo,rightX,yo+slopeParallel*(rightX-ox),'#c05639');
+  // الشعاع البنفسجي يمر بالمركز البصري دون انحراف في تقريب العدسة الرقيقة.
+  const slopeCenter=h/(d*sc);
+  line(r,xo,yo,rightX,axis+slopeCenter*(rightX-ox),'#8c4b94');
+  // امتدادات خلفية متقطعة للأشعة الحقيقية فقط عندما تكون الصورة خيالية.
+  if(Number.isFinite(di)&&di<0){
+    const leftX=Math.max(20,Math.min(xo,xi)-15);
+    line(r,ox,yo,leftX,yo+slopeParallel*(leftX-ox),'#c05639',true);
+    line(r,ox,axis,leftX,axis+slopeCenter*(leftX-ox),'#8c4b94',true);
+  }
+  if(Number.isFinite(di)&&xi>=20&&xi<=680&&Math.abs(m*h)<=125){
+    arrow(o,xi,axis,m*h,'#29865d',di<0?'الصورة الخيالية':'الصورة');
+  }
+  const kind=!Number.isFinite(di)?'الصورة عند اللانهاية (الجسم عند البؤرة)':di>0?'حقيقية مقلوبة':'خيالية معتدلة';
+  const size=!Number.isFinite(m)?'—':Math.abs(m)>1.02?'مكبّرة':Math.abs(m)<.98?'مصغّرة':'مساوية للحجم';
+  $('info').textContent=`بعد الصورة: ${Number.isFinite(di)?Math.abs(di).toFixed(1)+' سم':'∞'} ${di<0?'(جهة الجسم)':''} | ${kind} | ${size}`;
+}
+['d','f','type'].forEach(id=>$(id).addEventListener('input',draw));draw();
+const bank=[{q:'أي عدسة تجمع الأشعة المتوازية في بؤرة حقيقية؟',a:['المقعرة','المحدبة','كلتاهما'],c:1},{q:'وُضع جسم على بعد 30 سم من عدسة محدبة بعدها البؤري 10 سم. ما بُعد الصورة؟',a:['15 سم','20 سم','30 سم'],c:0},{q:'عندما يكون الجسم داخل البعد البؤري لعدسة محدبة، تكون الصورة:',a:['حقيقية مقلوبة','خيالية معتدلة مكبرة','خيالية مصغرة'],c:1},{q:'الصورة الناتجة من عدسة مقعرة لجسم حقيقي تكون عادة:',a:['حقيقية مقلوبة','خيالية معتدلة مصغرة','حقيقية مكبرة'],c:1},{q:'إذا وُضع الجسم عند بؤرة عدسة محدبة مثالية، فإن الأشعة الخارجة تكون:',a:['متوازية','متجمعة عند العدسة','متباعدة من البؤرة الأخرى'],c:0}];
+function render(){let box=$('questions');box.replaceChildren();bank.forEach((q,i)=>{let fs=document.createElement('fieldset'),leg=document.createElement('legend');leg.textContent=`${i+1}. ${q.q}`;fs.append(leg);q.a.forEach((a,j)=>{let lab=document.createElement('label'),inp=document.createElement('input');inp.type='radio';inp.name='q'+i;inp.value=j;lab.append(inp,document.createTextNode(' '+a));fs.append(lab)});box.append(fs)});$('feedback').textContent=''}
+$('grade').onclick=()=>{let score=0;for(let i=0;i<bank.length;i++){let a=document.querySelector(`input[name="q${i}"]:checked`);if(!a){$('feedback').textContent='أجيبي عن جميع الأسئلة أولًا.';return}if(+a.value===bank[i].c)score++}let pct=score/bank.length*100;$('feedback').textContent=`إجابات صحيحة: ${score} من ${bank.length}`;$('progress').style.width=pct+'%';$('result').textContent=`نسبة الإتقان: ${pct}% — ${pct>=80?'أحسنتِ! حققتِ معيار الإتقان (80%).':'راجعي الشرح والمحاكاة ثم أعيدي المحاولة.'}`};$('retry').onclick=()=>{render();$('progress').style.width='0';$('result').textContent='أكملي الاختبار لتظهر نتيجة الإتقان.'};render();
+</script></body></html>
