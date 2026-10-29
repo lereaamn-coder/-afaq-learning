@@ -1,0 +1,39 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تحدي العالمة الصغيرة | أفق</title><style>:root{--b:#641c35;--g:#c9a35a}*{box-sizing:border-box}body{margin:0;background:#f7f1e9;font-family:Tahoma,Arial,sans-serif;color:#30252a}header{background:var(--b);color:white;padding:26px 14px;text-align:center}main{max-width:920px;margin:24px auto;padding:0 14px}.card{background:white;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 5px 18px #0001;border-right:5px solid var(--g)}h1{margin:0 0 12px}h2{color:var(--b)}label{display:block;margin:15px 0}input{width:100%;accent-color:var(--b)}button,a.btn{display:inline-block;background:var(--b);color:white;border:0;border-radius:10px;padding:12px 18px;cursor:pointer;text-decoration:none;font-size:16px}svg{width:100%;height:auto;background:#fffaf3;border:1px solid #eadcca;border-radius:12px}#feedback{font-weight:bold;line-height:1.9;padding:12px;background:#f7f1e9;border-radius:10px}.muted{color:#695960}strong{color:var(--b)}.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1 1 200px}</style></head><body><header><h1>🔬 تحدي العالمة الصغيرة</h1><p>أفق | شاهدي ← جرّبي ← اختبري ← أتقني</p></header><main><div class="card"><a class="btn" href="lenses-learning-fixed.html">↩ العودة إلى رحلة العدسات</a><h2>🎯 مهمتك</h2><p>باستخدام <strong>عدسة محدبة</strong>، كوّني صورة <strong>حقيقية، مقلوبة، ومكبّرة</strong> بتحريك الجسم وتغيير البعد البؤري.</p><p class="muted">تلميح: ضعي الجسم بين البؤرة وضعف البعد البؤري (f &lt; dₒ &lt; 2f).</p></div><div class="card"><div class="row"><label>بعد الجسم: <strong id="dlabel">15</strong> سم<input id="d" type="range" min="5" max="60" value="15" step="1"></label><label>البعد البؤري: <strong id="flabel">10</strong> سم<input id="f" type="range" min="5" max="25" value="10" step="1"></label></div><svg id="scene" viewBox="0 0 800 360" role="img" aria-label="رسم أشعة عدسة محدبة وجسم وصورته"><g id="drawing"></g></svg><p class="muted">🟠 البرتقالي: موازٍ للمحور قبل العدسة ثم يمر بالبؤرة بعد الانكسار. 🟣 البنفسجي: يمر بالمركز البصري دون انحراف. الخطوط المتقطعة امتدادات خلفية للصور الخيالية.</p><p id="properties"></p><button id="check">🧠 تحققي من إنجاز المهمة</button><p id="feedback" aria-live="polite">حرّكي المنزلقات، ثم اضغطي للتحقق.</p></div><div class="card"><h2>💡 فكّري كعالمة</h2><p>لماذا تكون الصورة حقيقية ومقلوبة ومكبّرة عندما يقع الجسم بين F و2F أمام العدسة المحدبة؟</p><details><summary>إظهار التفسير العلمي</summary><p>لأن الأشعة المنكسرة تتلاقى فعليًا خلف العدسة، فتنتج صورة حقيقية مقلوبة. وعندما يكون بعد الجسم أكبر من f وأقل من 2f، تتكون الصورة على مسافة أكبر من 2f، ويكون مقدار التكبير أكبر من 1.</p></details></div></main><script>const $=id=>document.getElementById(id);function line(x1,y1,x2,y2,color='#b34e35',dash=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.5" ${dash?'stroke-dasharray="6 6"':''}/>`}function arrow(x,y,h,color){let tip=y-h;return `<path d="M${x} ${y} L${x} ${tip} M${x-7} ${tip+Math.sign(h)*11} L${x} ${tip} L${x+7} ${tip+Math.sign(h)*11}" stroke="${color}" stroke-width="3" fill="none"/>`}function draw(){
+ const d=+$('d').value,f=+$('f').value;
+ $('dlabel').textContent=d;$('flabel').textContent=f;
+ const di=Math.abs(d-f)<1e-9?Infinity:f*d/(d-f),m=Number.isFinite(di)?-di/d:NaN;
+ const scale=4.5,cx=400,cy=180,h=55,xo=cx-d*scale,yo=cy-h;
+ const xi=cx+di*scale,yi=cy-m*h;
+ const orange='#d35a3d',purple='#8d4b9c',edge=780;
+ let s=`<defs><clipPath id="rayClip"><rect x="20" y="8" width="760" height="344"/></clipPath></defs>`;
+ s+=line(20,cy,780,cy,'#777');
+ s+=`<ellipse cx="${cx}" cy="${cy}" rx="13" ry="143" fill="#bce5ee" fill-opacity=".65" stroke="#318ba1" stroke-width="3"/>`;
+ for(const sign of [-1,1])for(const mult of [1,2]){
+  const x=cx+sign*f*mult*scale;
+  if(x>22&&x<778){s+=line(x,cy-7,x,cy+7,'#777');s+=`<text x="${x}" y="${cy+23}" text-anchor="middle" font-size="13" fill="#555">${mult===1?'F':'2F'}</text>`}
+ }
+ s+=arrow(xo,cy,h,'#236aa2')+`<text x="${xo}" y="${yo-12}" text-anchor="middle" fill="#236aa2">الجسم</text>`;
+ // Ray A: exactly horizontal from the object tip to the lens, then through the far focus.
+ // Ray B: from the object tip through the optical centre; no deflection.
+ const slopeA=h/(f*scale),slopeB=h/(d*scale);
+ s+='<g clip-path="url(#rayClip)">';
+ s+=line(xo,yo,cx,yo,orange);
+ s+=line(cx,yo,edge,yo+slopeA*(edge-cx),orange);
+ s+=line(xo,yo,cx,cy,purple);
+ s+=line(cx,cy,edge,cy+slopeB*(edge-cx),purple);
+ // For virtual images, the dashed backward extensions intersect at the image.
+ if(Number.isFinite(di)&&di<0){
+  s+=line(cx,yo,xi,yi,orange,'dash');
+  s+=line(cx,cy,xi,yi,purple,'dash');
+ }
+ s+='</g>';
+ if(Number.isFinite(di)&&xi>20&&xi<780&&yi>-1000&&yi<1000){
+  s+=arrow(xi,cy,m*h,'#2a8a58');
+  s+=`<text x="${xi+9}" y="${Math.max(18,Math.min(338,yi-12))}" fill="#2a8a58">${di<0?'صورة خيالية':'الصورة'}</text>`;
+ }
+ $('drawing').innerHTML=s;
+ const kind=!Number.isFinite(di)?'الصورة عند اللانهاية':di>0?'حقيقية ومقلوبة':'خيالية ومعتدلة';
+ const size=!Number.isFinite(m)?'غير محدد':Math.abs(m)>1.001?'مكبّرة':Math.abs(m)<.999?'مصغّرة':'مساوية للحجم';
+ $('properties').textContent=`النتيجة: ${kind}، ${size}${Number.isFinite(di)?` | بعد الصورة: ${Math.abs(di).toFixed(1)} سم | مقدار التكبير: ${Math.abs(m).toFixed(2)}`:''}`;
+}
+$('d').oninput=draw;$('f').oninput=draw;$('check').onclick=()=>{let d=+$('d').value,f=+$('f').value,ok=d>f&&d<2*f;$('feedback').textContent=ok?'🌟 أحسنتِ! نجحتِ في تكوين صورة حقيقية مقلوبة ومكبّرة. أنتِ عالمة صغيرة!':d<=f?'حاولي إبعاد الجسم عن العدسة بحيث يصبح بعده أكبر من البعد البؤري.':d>=2*f?'اقتربي بالجسم قليلًا؛ يجب أن يكون بين F و2F.':'حاولي مرة أخرى.'};draw();</script></body></html>
