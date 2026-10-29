@@ -46,4 +46,18 @@ function draw(){
 const bank=[{q:'أي عدسة تجمع الأشعة المتوازية في بؤرة حقيقية؟',a:['المقعرة','المحدبة','كلتاهما'],c:1},{q:'وُضع جسم على بعد 30 سم من عدسة محدبة بعدها البؤري 10 سم. ما بُعد الصورة؟',a:['15 سم','20 سم','30 سم'],c:0},{q:'عندما يكون الجسم داخل البعد البؤري لعدسة محدبة، تكون الصورة:',a:['حقيقية مقلوبة','خيالية معتدلة مكبرة','خيالية مصغرة'],c:1},{q:'الصورة الناتجة من عدسة مقعرة لجسم حقيقي تكون عادة:',a:['حقيقية مقلوبة','خيالية معتدلة مصغرة','حقيقية مكبرة'],c:1},{q:'إذا وُضع الجسم عند بؤرة عدسة محدبة مثالية، فإن الأشعة الخارجة تكون:',a:['متوازية','متجمعة عند العدسة','متباعدة من البؤرة الأخرى'],c:0}];
 function render(){let box=$('questions');box.replaceChildren();bank.forEach((q,i)=>{let fs=document.createElement('fieldset'),leg=document.createElement('legend');leg.textContent=`${i+1}. ${q.q}`;fs.append(leg);q.a.forEach((a,j)=>{let lab=document.createElement('label'),inp=document.createElement('input');inp.type='radio';inp.name='q'+i;inp.value=j;lab.append(inp,document.createTextNode(' '+a));fs.append(lab)});box.append(fs)});$('feedback').textContent=''}
 $('grade').onclick=()=>{let score=0;for(let i=0;i<bank.length;i++){let a=document.querySelector(`input[name="q${i}"]:checked`);if(!a){$('feedback').textContent='أجيبي عن جميع الأسئلة أولًا.';return}if(+a.value===bank[i].c)score++}let pct=score/bank.length*100;$('feedback').textContent=`إجابات صحيحة: ${score} من ${bank.length}`;$('progress').style.width=pct+'%';$('result').textContent=`نسبة الإتقان: ${pct}% — ${pct>=80?'أحسنتِ! حققتِ معيار الإتقان (80%).':'راجعي الشرح والمحاكاة ثم أعيدي المحاولة.'}`};$('retry').onclick=()=>{render();$('progress').style.width='0';$('result').textContent='أكملي الاختبار لتظهر نتيجة الإتقان.'};render();
-</script></body></html>
+</script><section style="margin:25px auto;padding:20px;background:#fff7f9;border-radius:16px;text-align:center;max-width:850px;">
+  <h2 style="color:#641c35;">🎬 شاهدي واكتشفي | رحلة العدسات</h2>
+  <p>شاهدي الفيديو ثم انتقلي إلى المحاكاة التفاعلية.</p>
+
+  <iframe
+    src="https://www.youtube.com/embed/ztkQv_2-3go"
+    title="شرح العدسات"
+    style="width:100%;aspect-ratio:16/9;border:0;border-radius:12px;"
+    allowfullscreen>
+  </iframe>
+
+  <p style="color:#641c35;font-weight:bold;">
+    💡 كيف يؤثر بُعد الجسم عن العدسة في طبيعة الصورة المتكوّنة؟
+  </p>
+</section></body></html>
